@@ -1,0 +1,2 @@
+#!/bin/sh
+deutex -doom2 /usr/share/games/doom-data "$@"
