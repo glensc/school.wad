@@ -15,5 +15,5 @@ $(FILE): levels/map01.wad
 	mv -fb $(FILE) wads/
 	deutex -doom2 $(DATADIR) -make $(FILE)
 
-play game: $(FILE)
-	doom2 -file `pwd`/$(FILE) +map MAP01
+play: $(FILE)
+	doomsday -game jdoom -file `pwd`/$(FILE) +map MAP01
