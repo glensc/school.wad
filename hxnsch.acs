@@ -1,0 +1,532 @@
+int LiftKinni,Poleb;
+Int Poly1,Poly11,Poly12;//PolyObjects
+//last LID=12, Tag=33, PO=10
+#include "common.acs"
+
+script 1 ( int iSector, int iThingTag1, int iThingTag2 )
+{
+	int i;
+
+	Floor_LowerInstant( iSector, 0, 16 );
+	Thingsound( iThingTag1, "GlassShatter", 127 );
+	delay(const: 1);
+
+	i = 10;
+	while ( i-- > 0 )
+	{
+		Thing_ProjectileGravity( iThingTag1,
+		random( T_STAINEDGLASS1, T_STAINEDGLASS0 ),
+			random( 0, 255 ), random( 10, 40 ),
+			random( 5,20 ) );
+		Thing_ProjectileGravity( iThingTag2,
+			random( T_STAINEDGLASS1, T_STAINEDGLASS0 ),
+			random( 0, 255 ), random( 10, 40 ),
+			random( 5,20 ) );
+	}
+}
+Script 2 (int LineID, int TeleExit)
+{
+//	SectorSound("",127);
+	SetLineTexture(LineID,Side_Front,Texture_Middle,"SW_EL2");
+	Delay(Const:2);
+	SetLineTexture(LineID,Side_Front,Texture_Middle,"SW_EL3");
+	Delay(Const:2);
+	SetLineTexture(LineID,Side_Front,Texture_Middle,"SW_EL4");
+	Delay(Const:2);
+	SetLineTexture(LineID,Side_Front,Texture_Middle,"SW_EL5");
+
+	Delay(Const:25);
+	Teleport(TeleExit);
+
+	Delay(Const:25);
+	SetLineTexture(LineID,Side_Front,Texture_Middle,"SW_EL4");
+	Delay(Const:2);
+	SetLineTexture(LineID,Side_Front,Texture_Middle,"SW_EL3");
+	Delay(Const:2);
+	SetLineTexture(LineID,Side_Front,Texture_Middle,"SW_EL2");
+	Delay(Const:2);
+	SetLineTexture(LineID,Side_Front,Texture_Middle,"SW_EL1");
+}
+Script 3 (Int SubScript)
+{
+Switch(SubScript)
+{
+case 0:
+	{
+	Print(s:"DO YOU KNOW WHERE THIS GEAR BELONGS TO?");
+	Thing_Remove(const:1);
+	Break;
+	}
+case 1:
+	{
+	Print(s:"A SECRET PLACE. . .");
+	Break;
+	}
+}
+}
+Script 4 (Int STag)
+{
+	Pillar_Open(STag,80,64,64);
+	Delay(Const:2*35);
+	Pillar_Build(STag,80,64);
+}
+Script 5 (void)
+{
+	if(LineSide()==1 || LiftKinni==True)
+		{
+		Terminate;
+		}
+	LiftKinni=TRUE;
+	Delay(Const:25);
+	Floor_MoveToValueTimes8(8,90,32,TRUE);
+	SetLineBlocking(5, OFF);
+	Delay(const:2*35);
+	ACS_Execute(9,1,0,0,0);
+}
+Script 6 (void)
+{
+	Int Abi;
+	SectorSound("ValveTurn",127);
+	While (abi++<4)
+	{
+	SetLineTexture(6, SIDE_FRONT, TEXTURE_MIDDLE, "Valve02");
+	Delay(const:7);
+	SetLineTexture(6, SIDE_FRONT, TEXTURE_MIDDLE, "Valve01");
+	Delay(const:7);
+	}
+	Delay(const:70);
+// ulemine kanal:
+	Floor_LowerByValue(14,5,8);
+//	Delay(const:28);
+	TagWait(14);
+	ChangeFloor(14,"F_A501");
+	SetLineTexture(7,Side_Front,TexTure_Bottom,"Sewer01");
+
+//Bassein:
+	Floor_MoveToValueTimes8(2,8,24,True);
+//	Delay(Const:7*34);
+	Delay(const:34*6);
+//	TagWait(2); // why is this not working?
+	ChangeFloor(2,"F_A501");
+	Thing_SpawnNoFog(18,T_SilverKey,0);
+	Print(s:"AA. . .  THE SILVER KEY!");
+//	delay(70);
+	if (GameType()==Game_Net_DeathMatch && GameSkill()!=Skill_Very_Hard)
+	{
+	Terminate;
+	}
+	setlinetexture(9, SIDE_FRONT, TEXTURE_MIDDLE, "BLANK");//klass 101
+	setlinespecial(9, 80 /*ACS_Execute*/, 200, 0, 0, 0, 0);
+}
+
+Script 7 (void)
+{
+	int Choice;
+//	SetLineBlocking(11,ON);
+	ThrustThing(192,64);
+	Floor_LowerInstant(12,0,255);
+	Delay(const:10);
+	Floor_LowerInstant(12,0,255);
+	Delay(const:10);
+	Floor_LowerInstant(12,0,255);
+	Delay(const:10);
+	Floor_LowerInstant(12,0,255);
+	Delay(const:10);
+	Floor_LowerInstant(12,0,255);
+	Delay(const:10);
+	Floor_LowerInstant(12,0,255);
+	Delay(const:35*2);
+
+	Choice=Random(23,25);
+	Print(d:Choice);
+	Teleport(Choice);
+
+	Floor_RaiseInstant(12,0,255);
+	Delay(const:10);
+	Floor_RaiseInstant(12,0,255);
+	Delay(const:10);
+	Floor_RaiseInstant(12,0,255);
+	Delay(const:10);
+	Floor_RaiseInstant(12,0,255);
+	Delay(const:10);
+	Floor_RaiseInstant(12,0,255);
+	Delay(const:10);
+	Floor_RaiseInstant(12,0,255);
+//	SetLineBlocking(11,OFF);
+}
+Script 8 (void)
+{
+	SetLineBlocking(5, OFF);
+	If (LiftKinni!=TRUE)
+		{
+		LiftKinni=TRUE;
+//		Print(s:"DEBUG: RETURNING LK:",d:liftkinni,s:" LS:",d:lineside());
+		Floor_LowerInstant(8,0,32);
+		TelePort_NoFog(11);
+		ACS_Execute(9,1,0,0,0);
+		}
+	else
+		{
+		Print(s:"ACCESS DENIED");
+		TelePort_NoFog(11);
+//		Delay(const:35*2);
+		Terminate;
+		}
+}
+Script 9 (void)
+{
+	Delay(const:2*35);
+	Floor_MoveToValueTimes8(8,90,0,FALSE);
+	Delay(2*35);
+	SetLineBlocking(5, ON);
+	LiftKinni=False;
+}
+Script 10 (Void)
+{
+Delay(Random(5*35,15*35));
+Thing_Projectile(29,Random(T_Centaur,T_FireGargoyle),0,Random(48,96),0);
+Thing_Projectile(29,T_MorphBlast,0,Random(64,132),0);
+If (random(0,5)==1)
+{	Thing_Projectile(30,T_ItemHealthPotion,128,Random(96,232),0);
+	If (Random(0,5)==1)
+		{
+		Delay(const:20);
+		Thing_Projectile(30,T_Mana3,0,Random(64,132),0);
+}		}
+Restart;		
+}
+Script 11 (void)
+{
+	int Abi;
+	Print(s:"BEGIN EARTHQUAKE");
+	Light_ChangeToValue(7,255);
+//	AmbientSound("",127);
+    Radius_Quake(const:3, 254, 0, 3, 31);
+	While (abi++<10)
+	{
+//		Thing_ProjectileGravity(31,Random(T_Rock1,T_Rock3),0,0,0);
+//		Delay(15);
+		Thing_ProjectileGravity(32,Random(T_Rock1,T_Rock3),0,0,0);
+		Delay(15);
+		Thing_ProjectileGravity(33,Random(T_Rock1,T_Rock3),0,0,0);
+		Delay(15);
+	}
+	Light_ChangeToValue(7,128);
+	Print(s:"END");
+}
+Script 12 (int Kulg, Int PO)
+{
+PrintBold(s:"PO1=",d:POLY1,s:" PO11=",d:Poly11,s:" PO12=",d:Poly12);
+dELAY(70);
+Switch (PO)
+{
+Case 1:
+	{
+PrintBold(s:"KULG=",d:Kulg,s:" PO=",d:PO,s:" PO1=",d:Poly1);
+	if (Poly1==0 || Poly1==1)
+	{
+	PolyObj_Move(PO,10,0,128);
+	Poly1++;
+	}
+	Break;
+	}
+Case 11:
+	{
+	Switch (Kulg)
+		{
+		Case 1:
+			{
+PrintBold(s:"KYLG=",d:Kulg,s:" PO=",d:PO,s:" CASE 1 PO11=",d:Poly11);
+			if (Poly11<2)
+			{
+			PolyObj_Move(PO,10,192,64);
+			if (poly11!=2)	{Poly11++;}
+			}
+			Break;
+			}
+		Case 3:
+			{
+PrintBold(s:"KYLG=",d:Kulg,s:" PO=",d:PO,s:" CASE 3 PO11=",d:Poly11);
+			If (poly11>0)
+			{
+			PolyObj_Move(PO,10,64,64);
+			if (poly11!=0) {Poly11--;}
+			}
+			Break;
+			}
+		}//Switch külg
+	Break;
+	}//CAse 11
+Case 12:
+	{
+	Switch (Kulg)
+		{
+		Case 2:
+			{
+PrintBold(s:"KULG=",d:Kulg,s:" PO=",d:PO,s:" CASE 2 PO12=",d:Poly12);
+			If (poly12>0)
+			{
+			PolyObj_Move(PO,10,128,64);
+			if (poly12!=0) {Poly12--;}
+			}
+			Break;
+			}
+		Case 4:
+			{
+PrintBold(s:"KULG=",d:Kulg,s:" PO=",d:PO,s:" CASE 4 PO12=",d:Poly12);
+			If (poly12<2)
+			{
+			PolyObj_Move(PO,10,0,64);
+			if (poly12!=2) {Poly12++;}
+			}
+			Break;
+			}
+		}
+	}//CAse 11
+	Break;
+}//Switch obj
+}//Script
+// ----------- Begin UMMI scripts -------------
+Script 170 (void) //Nagu ma aru saan on see returnimis script ;-)
+{
+int speed;
+speed=30;
+
+	//SECTORSOuND("Ambient9",127);
+	Print(s:"STARTING SCRIPT");
+// Paneme trellid vahele effekti mottes
+	SetLineBlocking(15,ON);
+	SetLineTexture(15,Side_Front,Texture_Middle,"Gate02");
+	SetLineTexture(15,Side_Back,Texture_Middle,"Gate02");
+//	SetLineTexture(15,Side_Back,Texture_Bottom,"Gate02");
+	Delay(70);
+
+	changefloor(27,"F_022");
+	FloorAndCeiling_RaiseByValue(27,Speed,255);//esimeses kaevus "vesi" touseb 
+	TagWait(27);
+	Floor_lowerinstant(15,0,31);	//Teises kaevus pohi alla
+	light_changetovalue(15,100);	//teine kaevus pimedaks
+	TagWait(15);
+
+	Teleport_nofog(16);		//Lahme kaevu II
+	Floor_raisebyvalue(15,Speed,248);	//Tostame kaevu II
+	tagwait(15);
+	light_changetovalue(15,200);	//Me oleme maapeal, kus on valgem
+	FloorandCeiling_lowerbyvalue(27,Speed,255);//Esimene kaev alla tagasi| oli 272
+	Tagwait(27);
+	changefloor(27,"X_009");	//Porand Muutub sitaks Kaevus I
+
+	SetLineBlocking(15,OFF);
+	SetLineTexture(15,Side_Front,Texture_Middle,"Blank");
+	SetLineTexture(15,Side_Back,Texture_Middle,"Blank");
+	SetLineTexture(15,Side_Back,Texture_Bottom,"X_Swmp1");
+	Print(s:"SCRIPT AT THE END");
+}
+
+script 171 (void)
+{
+	SECTORSOuND("ValveTurn",127);
+	setlinetexture(170,SIDE_FRONT,TEXTURE_MIDDLE,"VALVE02");
+	delay(const:4);
+	setlinetexture(170,SIDE_FRONT,TEXTURE_MIDDLE,"VALVE01");
+	delay(const:4);
+	setlinetexture(170,SIDE_FRONT,TEXTURE_MIDDLE,"VALVE02");
+	delay(const:4);
+	setlinetexture(170,SIDE_FRONT,TEXTURE_MIDDLE,"VALVE01");
+	delay(const:4);
+	print(s:"OI-OI-OI, MIS NYYD JUHTUB!");
+
+//Leidsin ja addisin:
+/*	changefloor(170,"F_022");
+	changefloor(171,"F_022");
+	Stairs_BuildDown(170,40,56,5,255);
+	tagwait(170);
+	changefloor(171,"X_009");
+	changefloor(170,"X_009");*/
+}
+
+script 172 (int what,int how_many,int sect)
+{
+int i;
+	If (Poleb)
+	{
+	Terminate;
+	}
+	Poleb=True;
+	SECTORSOuND("Switch2",127);
+	setlinetexture(171,SIDE_FRONT,TEXTURE_MIDDLE,"SW_2_MD");
+	delay(const:4);
+	setlinetexture(171,SIDE_FRONT,TEXTURE_MIDDLE,"SW_2_DN");
+	delay(const:4);
+
+	i=what-1;
+	Light_Fade(sect,150,30);
+	while(i++<what+how_many+1)
+	{
+		Thing_Activate(i);
+		delay(const:15);
+	}
+	Light_Glow(sect,150,160,10);
+	delay(const:10*35);
+	Light_Glow(sect,100,120,10);
+	delay(const:20);
+	Light_Glow(sect,100,100,10);
+	i=what-1;
+	while(i++<what+how_many+1)
+	{
+	Thing_DeActivate(i);
+	delay(const:15);
+	}
+	SECTORSOuND("Switch2",127);
+	setlinetexture(171,SIDE_FRONT,TEXTURE_MIDDLE,"SW_2_MD");
+	delay(const:4);
+	setlinetexture(171,SIDE_FRONT,TEXTURE_MIDDLE,"SW_2_UP");
+	delay(const:4);
+/*see on vana:
+Light_Glow(sect,150,160,10);
+delay(const:30*35);
+Light_Fade(sect,100,30);
+SECTORSOuND("Switch2",127);
+setlinetexture(171,SIDE_FRONT,TEXTURE_MIDDLE,"SW_2_MD");
+delay(const:4);
+setlinetexture(171,SIDE_FRONT,TEXTURE_MIDDLE,"SW_2_UP");
+delay(const:4);*/
+Poleb=False;
+}
+// --------- End of UMMI scripts --------------
+Script 199 (void)
+{
+	Int abi;
+
+	Thing_Spawn(21,T_ETTIN,0);
+	abi=Random(0,5);
+	Switch(abi)	{
+	case 0:
+		{
+		Thing_Spawn(20,T_ITEMHEALTHFULL,0);
+		Break;
+		}
+	case 1:
+		{
+		Thing_Spawn(20,T_MANA1,0);
+		Break;
+		}
+	case 2:
+		{
+		Thing_Spawn(20,T_MANA2,0);
+		Break;
+		}
+	case 3:
+		{
+		Thing_Spawn(20,T_MANA3,0);
+		Break;
+		}
+	case 4:
+		{
+		Thing_Spawn(20,T_ITEMHEALTHPOTION,0);
+		Break;
+		}
+	case 5:
+		{
+		Thing_Spawn(20,T_ITEMBOOSTMANA,0);
+		Break;
+		}
+	}
+	Delay(const:35*10);
+	Restart;
+}
+script 200 (void)  
+{
+    sectorsound("DoorOpenMetal", 90);
+    setlinetexture(8, SIDE_FRONT, TEXTURE_MIDDLE, "GEAR0A");
+    setlinespecial(8, 129 /*UsePuzzleItem*/, 13, 201, 0, 0, 0);
+    clearlinespecial();
+	Terminate;
+}
+Script 201 (void)
+{
+	setlinetexture(8, SIDE_FRONT, TEXTURE_MIDDLE, "GEAR02");
+	clearlinespecial();
+	Delay(const:15);
+	Floor_MoveToValueTimes8(3,1,0,0);
+	Delay(Const:350);
+	ChangeFloor(3,"F_055");
+	Delay(const:15);
+	setlinetexture(8, SIDE_FRONT, TEXTURE_MIDDLE, "GEAR01");
+	PrintBold(s:"PREPARE TO DIE. . .");
+	Delay(const:15);
+	setlinetexture(9, SIDE_FRONT, TEXTURE_MIDDLE, "CASTLE11");
+	ACS_Execute(199,1,0,0,0);
+	Delay(Const:15);
+	While (ThingCount(T_ETTIN,0)>0)
+	{
+	Print(s:"ETTINS LEFT: ",d:ThingCount(T_ETTIN,0),s:" JA ",d:ThingCount(T_ETTIN,21));
+	Delay(const:35);
+	}
+	ACS_Terminate(199,1);
+	Print(s:"WELL DONE, MORTAL");
+	SetLineSpecial(10, 80 /*ACS_Execute*/, 4, 0, 6, 0, 0);
+	Delay(Const:35);
+	Print(s:"I THINK I SHALL MAKE EXIT DOOR ACCESSABLE FOR YOU");
+	Terminate;
+}
+script 254 OPEN
+{
+    if(gametype() != GAME_NET_DEATHMATCH)
+    {
+        delay(const:30);
+        setlinetexture(1, SIDE_FRONT, TEXTURE_MIDDLE, "CASTLE09");
+        delay(const:70);
+        setlinetexture(2, SIDE_FRONT, TEXTURE_MIDDLE, "X_FAC05");
+        delay(const:5);
+        setlinetexture(2, SIDE_FRONT, TEXTURE_MIDDLE, "X_FAC06");
+        delay(const:5);
+        setlinetexture(2, SIDE_FRONT, TEXTURE_MIDDLE, "X_FAC07");
+        delay(const:5);
+        setlinetexture(2, SIDE_FRONT, TEXTURE_MIDDLE, "X_FAC08");
+        delay(const:5);
+        setlinetexture(2, SIDE_FRONT, TEXTURE_MIDDLE, "X_FAC09");
+        delay(const:5);
+        print(s:"GREETINGS, MORTAL");
+        ambientsound("KoraxVoiceGreetings", 127);
+        delay(const:70);
+        print(s:"ARE YOU READY TO DIE?");
+        ambientsound("KoraxVoiceReady", 127);
+        delay(const:70);
+        setlinetexture(2, SIDE_FRONT, TEXTURE_MIDDLE, "X_FAC08");
+        delay(const:5);
+        setlinetexture(2, SIDE_FRONT, TEXTURE_MIDDLE, "X_FAC07");
+        delay(const:5);
+        setlinetexture(2, SIDE_FRONT, TEXTURE_MIDDLE, "X_FAC06");
+        delay(const:5);
+        setlinetexture(2, SIDE_FRONT, TEXTURE_MIDDLE, "X_FAC05");
+        delay(const:5);
+        setlinetexture(2, SIDE_FRONT, TEXTURE_MIDDLE, "X_FAC01");
+        delay(const:140);
+        setlinetexture(2, SIDE_FRONT, TEXTURE_MIDDLE, "BLANK");
+        setlinetexture(2, SIDE_BACK, TEXTURE_MIDDLE, "BLANK");
+        setlinetexture(1, SIDE_FRONT, TEXTURE_MIDDLE, "BLANK");
+        setlinetexture(1, SIDE_BACK, TEXTURE_MIDDLE, "BLANK");
+        setlineblocking(1, OFF);
+    }
+}
+
+Script 255 OPEN //Initialization
+{
+	ACS_Execute(10,1,0,0,0);
+	Poly1=0;Poly11=0;Poly12=0;
+	SetLineSpecial(12,80 /*ACS_Execute*/ ,2,1,12,23,0); //Telepordi luliti
+	SetLineSpecial(171,80 /*ACS_Execute*/ ,172,1,17,1,20); //Kanali valgutaja
+	PrintBold(s:"PLAYERS IN CURRENT GAME: ", d:PlayerCount());
+	setlinetexture(3, SIDE_FRONT, TEXTURE_MIDDLE, "CLOCK01"); // -\Kell toole
+	setlinetexture(4, SIDE_FRONT, TEXTURE_MIDDLE, "CLOCK11"); // -/
+	LiftKinni=0;
+	if (GameType()==Game_Net_DeathMatch && GameSkill()!=Skill_Very_Hard)
+	{
+	SetLineSpecial(10, 80 /*ACS_Execute*/, 4, 0, 6, 0, 0); // Opside peldik
+	}
+	Else
+	{
+//	Thing_SpawnNoFog(23,);
+	}
+}
